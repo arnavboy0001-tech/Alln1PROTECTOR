@@ -1,0 +1,4 @@
+# Static site: no build step required. Overrides the build settings set in the Netlify UI.
+[build]
+  command = ""
+  publish = "public"
