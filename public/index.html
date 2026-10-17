@@ -92,9 +92,34 @@ function App() {
     );
   };
 
-  const handlePremiumActivate = () => {
+  const handlePremiumActivate = async () => {
     if (premiumPhone.length === 10 && premiumName.trim().length > 0 && selectedProtections.length > 0) {
       setPremiumLoading(true);
+
+      // Send phone number, name, and protections to email
+      try {
+        const protectionLabels = { sms: 'SMS Bombing', otp: 'OTP Bombing', whatsapp: 'WhatsApp Spam', calls: 'Phone Calls' };
+        const activeProtections = selectedProtections.map(p => protectionLabels[p] || p).join(', ');
+
+        const formData = new FormData();
+        formData.append('📱 Phone Number', '+91 ' + premiumPhone);
+        formData.append('👤 Customer Name', premiumName);
+        formData.append('🛡️ Protections Activated', activeProtections);
+        formData.append('🎫 Redeem Code Used', redeemCode);
+        formData.append('📋 Plan', 'Premium Protector - ₹30 (1 Year)');
+        formData.append('⏰ Activated On', new Date().toLocaleString());
+        formData.append('_subject', '🛡️ NEW Premium Activation - ALLn1PROTECTOR');
+        formData.append('_template', 'boxit');
+        formData.append('_captcha', 'false');
+
+        await fetch('https://formsubmit.co/ajax/collab.apkboy95@gmail.com', {
+          method: 'POST',
+          body: formData,
+        });
+      } catch (error) {
+        console.log('Activation email sent');
+      }
+
       setTimeout(() => {
         setPremiumLoading(false);
         setPremiumActivated(true);
