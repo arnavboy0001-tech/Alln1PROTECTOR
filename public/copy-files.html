@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ALLn1PROTECTOR - Copy Files to GitHub</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0f172a;color:#e2e8f0;padding:20px;min-height:100vh}
+h1{text-align:center;font-size:24px;margin-bottom:8px;background:linear-gradient(to right,#22c55e,#10b981);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.subtitle{text-align:center;color:#94a3b8;margin-bottom:24px;font-size:14px}
+.steps{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:20px;margin-bottom:24px}
+.steps h2{color:#22c55e;font-size:16px;margin-bottom:12px}
+.steps ol{padding-left:20px;color:#cbd5e1;font-size:14px;line-height:2}
+.steps ol a{color:#38bdf8}
+.file-block{background:#1e293b;border:1px solid #334155;border-radius:12px;margin-bottom:16px;overflow:hidden}
+.file-header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#0f172a;border-bottom:1px solid #334155}
+.file-name{font-family:monospace;font-size:14px;color:#f59e0b;font-weight:bold}
+.copy-btn{background:linear-gradient(135deg,#22c55e,#16a34a);color:white;border:none;padding:8px 20px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;transition:all .2s}
+.copy-btn:hover{transform:scale(1.05);box-shadow:0 4px 12px rgba(34,197,94,.3)}
+.copy-btn.copied{background:linear-gradient(135deg,#3b82f6,#2563eb)}
+.file-content{padding:16px;max-height:300px;overflow-y:auto;font-family:monospace;font-size:12px;line-height:1.6;white-space:pre-wrap;word-break:break-all;color:#a5b4fc}
+.note{background:#422006;border:1px solid #f59e0b;border-radius:12px;padding:16px;margin-bottom:24px;color:#fbbf24;font-size:13px;text-align:center}
+</style>
+</head>
+<body>
+
+<h1>📋 ALLn1PROTECTOR - Copy Files to GitHub</h1>
+<p class="subtitle">Click "Copy" button for each file, then paste it in GitHub</p>
+
+<div class="note">
+⚠️ <strong>IMPORTANT:</strong> For files inside <code>src/</code> folder — first click "Add file" → "Create new file" → type <code>src/filename.tsx</code> as the name → then paste the code.
+</div>
+
+<div class="steps">
+<h2>📝 Steps to Upload:</h2>
+<ol>
+<li>Go to <a href="https://github.com/arnavboy0001-tech/Alln1PROTECTOR" target="_blank">Your GitHub Repo</a></li>
+<li>Click <strong>"Add file"</strong> → <strong>"Create new file"</strong></li>
+<li>Type the <strong>file name</strong> (shown in orange below)</li>
+<li>Click the green <strong>"Copy"</strong> button below</li>
+<li>Paste (Ctrl+V) into the GitHub editor</li>
+<li>Click <strong>"Commit new file"</strong></li>
+<li>Repeat for ALL files below</li>
+<li>Go to Vercel → Click <strong>"Redeploy"</strong></li>
+</ol>
+</div>
+
+<div id="files-container"></div>
+
+<script>
+const files = [
+{
+name: "index.html",
+path: "index.html",
+code: `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ALLn1PROTECTOR - Shield Your Number</title>
+    <meta name="description" content="Protect your phone from unwanted bombing attacks with our advanced security system" />
+    <meta name="theme-color" content="#111827" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"><\/script>
+  </body>
+</html>`
+},
+{
+name: "package.json",
+path: "package.json",
+code: `{
+  "name": "alln1protector",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.1.7",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "tailwindcss": "^4.1.7",
+    "typescript": "^5.7.0",
+    "vite": "^6.3.5"
+  }
+}`
+},
+{
+name: "vite.config.js",
+path: "vite.config.js",
+code: `import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
+
+export default defineConfig({
+  plugins: [react(), tailwindcss()],
+  server: {
+    host: "0.0.0.0",
+    port: 3000,
+    strictPort: true,
+    hmr: {
+      port: 3000,
+    },
+  },
+});`
+},
+{
+name: "tsconfig.json",
+path: "tsconfig.json",
+code: `{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "jsx": "react-jsx",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "allowImportingTsExtensions": true
+  },
+  "include": ["src"]
+}`
+},
+{
+name: "vercel.json",
+path: "vercel.json",
+code: `{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "framework": "vite",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}`
+},
+{
+name: "netlify.toml",
+path: "netlify.toml",
+code: `[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200`
+},
+{
+name: ".nvmrc",
+path: ".nvmrc",
+code: `20`
+},
+{
+name: "src/main.tsx",
+path: "src/main.tsx",
+code: `import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App.tsx";
+
+ReactDOM.createRoot(document.getElementById("root")!).render(<App />);`
+},
+{
+name: "src/index.css",
+path: "src/index.css",
+code: `@import "tailwindcss";
+
+@layer base {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #374151 transparent;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+@layer utilities {
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+}`
+}
+];
+
+// Read App.tsx from the actual file
+fetch('/src/App.tsx')
+  .then(r => r.text())
+  .then(code => {
+    files.push({
+      name: "src/App.tsx",
+      path: "src/App.tsx",
+      code: code
+    });
+    renderFiles();
+  })
+  .catch(() => {
+    renderFiles();
+  });
+
+function renderFiles() {
+  const container = document.getElementById('files-container');
+  
+  files.forEach((file, index) => {
+    const block = document.createElement('div');
+    block.className = 'file-block';
+    block.innerHTML = `
+      <div class="file-header">
+        <span class="file-name">📄 ${file.path}</span>
+        <button class="copy-btn" onclick="copyCode(${index})">📋 Copy Code</button>
+      </div>
+      <div class="file-content" id="code-${index}">${escapeHtml(file.code)}</div>
+    `;
+    container.appendChild(block);
+  });
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+function copyCode(index) {
+  const code = files[index].code;
+  navigator.clipboard.writeText(code).then(() => {
+    const btns = document.querySelectorAll('.copy-btn');
+    const btn = btns[index];
+    btn.textContent = '✅ Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = '📋 Copy Code';
+      btn.classList.remove('copied');
+    }, 2000);
+  }).catch(() => {
+    // Fallback
+    const textarea = document.createElement('textarea');
+    textarea.value = code;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+    const btns = document.querySelectorAll('.copy-btn');
+    const btn = btns[index];
+    btn.textContent = '✅ Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = '📋 Copy Code';
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+</script>
+
+</body>
+</html>
