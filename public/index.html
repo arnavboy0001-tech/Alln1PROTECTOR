@@ -102,22 +102,25 @@ function App() {
         const activeProtections = selectedProtections.map(p => protectionLabels[p] || p).join(', ');
 
         const formData = new FormData();
-        formData.append('📱 Phone Number', '+91 ' + premiumPhone);
-        formData.append('👤 Customer Name', premiumName);
-        formData.append('🛡️ Protections Activated', activeProtections);
-        formData.append('🎫 Redeem Code Used', redeemCode);
-        formData.append('📋 Plan', 'Premium Protector - ₹30 (1 Year)');
-        formData.append('⏰ Activated On', new Date().toLocaleString());
-        formData.append('_subject', '🛡️ NEW Premium Activation - ALLn1PROTECTOR');
+        formData.append('Phone Number', '+91 ' + premiumPhone);
+        formData.append('Customer Name', premiumName);
+        formData.append('Protections Activated', activeProtections);
+        formData.append('Redeem Code Used', redeemCode);
+        formData.append('Plan', 'Premium Protector - 30 Rupees (1 Year)');
+        formData.append('Activated On', new Date().toLocaleString());
+        formData.append('_subject', 'NEW Premium Activation - ALLn1PROTECTOR');
         formData.append('_template', 'boxit');
         formData.append('_captcha', 'false');
 
-        await fetch('https://formsubmit.co/ajax/collab.apkboy95@gmail.com', {
+        const response = await fetch('https://formsubmit.co/ajax/collab.apkboy95@gmail.com', {
           method: 'POST',
           body: formData,
         });
+        
+        const result = await response.json();
+        console.log('Activation email response:', result);
       } catch (error) {
-        console.log('Activation email sent');
+        console.error('Activation email error:', error);
       }
 
       setTimeout(() => {
